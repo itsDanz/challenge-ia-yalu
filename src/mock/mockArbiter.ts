@@ -6,7 +6,7 @@
  *   409 not_your_turn / unknown_game, 401 unauthorized.
  * - Absence: a turn not picked up within `absentMs` (30 s by default) loses the game.
  * - House bots casa-aleatorio and casa-basico move instantly, server-side.
- * - MOCK-ONLY: POST /admin/match {team1, team2} creates a friendly between two teams
+ * - MOCK-ONLY: POST /admin/match {team1, team2, opening?} creates a friendly between two teams
  *   (team ids or tokens). The real arbiter has no such endpoint.
  */
 
@@ -102,7 +102,8 @@ export interface MockArbiter {
   close(): Promise<void>;
   games: Map<string, MockGame>;
   /** Creates a friendly game between two tokens (mock-only helper). */
-  createMatch(token1: string, token2: string): MockGame;
+  /** `opening`: columns pre-played before the bots take over (to vary deterministic series). */
+  createMatch(token1: string, token2: string, opening?: number[]): MockGame;
   createPractice(token: string, opponentBot: HouseBot, first: Player): MockGame;
 }
 
@@ -269,7 +270,7 @@ export async function startMockArbiter(opts: MockArbiterOptions = {}): Promise<M
     return best;
   }
 
-  function newGame(kind: MockGame['kind'], side1: Side, side2: Side, matchId: string | null): MockGame {
+  function newGame(kind: MockGame['kind'], side1: Side, side2: Side, matchId: string | null, opening: number[] = []): MockGame {
     seq++;
     const game: MockGame = {
       game_id: `g_${kind === 'practice' ? 'p_' : ''}${String(seq).padStart(3, '0')}`,
@@ -289,6 +290,12 @@ export async function startMockArbiter(opts: MockArbiterOptions = {}): Promise<M
       timer: null,
     };
     games.set(game.game_id, game);
+    for (const column of opening) {
+      const by = game.current as Player;
+      game.grid = dropPiece(game.grid, column, by).grid;
+      game.moves.push({ turn: game.moves.length + 1, by, column, ms: 0 });
+      game.current = opponent(by);
+    }
     makeTurnAvailable(game);
     return game;
   }
@@ -305,8 +312,8 @@ export async function startMockArbiter(opts: MockArbiterOptions = {}): Promise<M
       : newGame('practice', houseSide(bot), teamSide(token), null);
   }
 
-  function createMatch(token1: string, token2: string): MockGame {
-    return newGame('friendly', teamSide(token1), teamSide(token2), 'amistoso');
+  function createMatch(token1: string, token2: string, opening: number[] = []): MockGame {
+    return newGame('friendly', teamSide(token1), teamSide(token2), 'amistoso', opening);
   }
 
   function summary(game: MockGame): Record<string, unknown> {
@@ -480,7 +487,10 @@ export async function startMockArbiter(opts: MockArbiterOptions = {}): Promise<M
       const t1 = find(body.team1);
       const t2 = find(body.team2);
       if (!t1 || !t2) return err(res, 400, 'validation', 'team1/team2 deben ser tokens o ids de equipo.');
-      const game = createMatch(t1, t2);
+      const opening = body.opening ?? [];
+      if (!Array.isArray(opening) || opening.length > 6 || opening.some((c) => !Number.isInteger(c) || c < 0 || c > 7))
+        return err(res, 400, 'validation', 'opening debe ser una lista de hasta 6 columnas (0-7).');
+      const game = createMatch(t1, t2, opening as number[]);
       return sendJson(res, 201, { game_id: game.game_id });
     }
 
