@@ -11,6 +11,7 @@ iterative deepening y tabla de transposición.
 | [docs/TECNICO.md](docs/TECNICO.md) | Arquitectura, algoritmo, decisiones, desviaciones, cobertura |
 | [docs/MANUAL.md](docs/MANUAL.md) | Manual de la app para personas que no programan |
 | [docs/IA_BITACORA.md](docs/IA_BITACORA.md) | Cómo usamos la IA: qué pedimos, qué falló, cómo lo verificamos |
+| [docs/EXPOSICION.md](docs/EXPOSICION.md) | Guion de la exposición, preguntas del jurado y checklist del día |
 | [AGENTS.md](AGENTS.md) | Reglas para los agentes de IA en este repo |
 
 ## Requisitos
