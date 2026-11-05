@@ -1,0 +1,40 @@
+{
+  "name": "cuatro-en-linea-8x7",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bot de Cuatro en línea 8×7 (Equipo 3) + app web para jugar contra él",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "start": "node src/cli/start.ts",
+    "mock": "node src/cli/mock.ts",
+    "dev:web": "vite --config web/vite.config.ts",
+    "build:web": "vite build --config web/vite.config.ts",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "selfplay": "node src/cli/selfplay.ts",
+    "bench": "node src/cli/bench.ts",
+    "practice": "node src/cli/practice.ts",
+    "me": "node src/cli/me.ts",
+    "submit": "node src/cli/submit.ts"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@types/node": "^24.19.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.2.1",
+    "@vitest/coverage-v8": "^5.1.0",
+    "jsdom": "^31.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.6",
+    "vitest": "^5.1.0"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  }
+}
