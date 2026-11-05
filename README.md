@@ -69,6 +69,7 @@ npm run me                                   # verifica el token y muestra posic
 npm run practice -- casa-basico 1            # práctica contra el bot de la casa, abrimos nosotros
 npm run practice -- casa-basico 2            # práctica, abre la casa
 npm run submit -- https://github.com/<org>/<repo> [commit]   # registra la entrega
+npm run rename -- "Nombre del equipo"        # cambia el nombre visible (máx. 30)
 ```
 
 ## Desarrollo sin árbitro (mock)
@@ -79,6 +80,15 @@ ARBITRO_URL=http://localhost:8790 TEAM_TOKEN=token-equipo3 npm start
 ARBITRO_URL=http://localhost:8790 TEAM_TOKEN=token-equipo3 npm run practice -- casa-basico 1
 npm run dev:web                               # app con recarga en caliente en :5173
 ```
+
+## App pública en Vercel (opcional)
+
+La app también se puede publicar como sitio estático: el **mismo motor** corre en el navegador
+(Web Worker), sin servidor. `vercel.json` ya está configurado (`npm run build:static` → `web/dist`).
+En Vercel: *Add New → Project → Import* este repositorio y *Deploy* (no hace falta configurar nada).
+
+> El **bot del torneo no corre en Vercel**: necesita un proceso permanente haciendo long polling,
+> así que corre en la laptop del equipo con `npm start`.
 
 ## Medir la fuerza del motor
 

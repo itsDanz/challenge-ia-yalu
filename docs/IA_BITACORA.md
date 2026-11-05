@@ -43,6 +43,7 @@ de la parte "cómo usamos la IA" de la exposición.
 | 10 | Frontend: en "Repetir partida" la IA inventó motivos de fin de partida que no existen en el protocolo. | Comparación contra `docs/arbitro-openapi.json`. | Se usaron los valores reales (`connect4`, `draw`, `illegal_move`, `timeout`, `absent`, `admin`). |
 | 11 | Frontend: en una laptop de 768 px de alto el tablero empujaba la leyenda fuera de la pantalla. | Prueba visual. | Altura del tablero ajustada. |
 | 12 | Indicador "Bot del torneo: desconectado" durante los primeros 20 s aunque sí estaba conectado (el primer long poll tarda hasta 20 s en responder). | Prueba visual de punta a punta contra el mock. | El primer `GET /api/next` usa `wait=0`. |
+| 14 | Revisión adversarial con un agente independiente (Fable): **0 defectos confirmados**, 4 plausibles (POST con timeout de 8 s sin margen para reintentar, 5xx sin reintento, `BOT_THINK_MS` > 1700 descoordinado con el watchdog, reloj medido desde la recepción). | Experimentos propios del agente (ver `docs/TECNICO.md` §8). | Se aplicaron los tres primeros con prueba nueva para el reintento en 5xx. |
 | 13 | **Lección:** el agente del backend reportó que **ninguna** prueba le falló a la primera, y lo señaló como debilidad: escribió las pruebas después del código y pueden compartir sus puntos ciegos. | Autocrítica del propio agente. | Lo compensamos con la prueba de punta a punta contra el mock y la práctica contra el árbitro real. |
 
 ## Qué verificamos siempre

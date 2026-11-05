@@ -182,10 +182,14 @@ A partir de ~30 fichas el bot normalmente llega al final del árbol: juega perfe
 | Límite duro implícito | Explícito: 2200 ms + worker reiniciable | Defensa en profundidad contra timeouts. |
 | Primer long poll con `wait=20` | `wait=0` en la primera consulta | El indicador de conexión tardaba 20 s en ponerse verde (encontrado en la prueba de punta a punta). |
 | `WIN_SCORE` | 10000 compartido con la app mediante una prueba de contrato | Los agentes del motor y del frontend asumieron valores distintos (bitácora #2). |
+| La app sólo funciona con el servidor del bot | Además, **modo estático** para Vercel: el mismo `src/engine` corre en un Web Worker del navegador (`web/src/engine.worker.ts`) y las repeticiones se leen directo del árbitro (permite CORS) | Poder compartir la app con un enlace público sin depender de la laptop. Los niveles viven en `src/engine/levels.ts` para que servidor y navegador jueguen idéntico. El bot del torneo **sigue** corriendo en la laptop: Vercel es *serverless* y no puede mantener un long polling permanente. |
+| OpenAPI preliminar 1.0.1 | Oficial 1.1.0 | Sólo agrega `PATCH /api/me` (renombrar equipo): `npm run rename`. El protocolo de juego no cambió. |
+| `POST /api/move` con el timeout general (8 s) | Timeout de 1 s y reintento también en 5xx/429 | Hallazgo de la revisión adversarial: un POST trabado no dejaba tiempo para reintentar dentro de los 3 s. |
+| `BOT_THINK_MS` hasta 2000 | Tope en 1700 | Arriba de eso el *watchdog* del worker (presupuesto + 400 ms) dispararía después del respaldo de 2200 ms. |
 
 ## 7. Pruebas y cobertura
 
-`npm test` = `vitest run --coverage`. **157 pruebas** en 14 archivos, todas verdes. Umbrales
+`npm test` = `vitest run --coverage`. **159 pruebas** en 14 archivos, todas verdes. Umbrales
 configurados (líneas/sentencias/funciones 80 %, ramas 70 %): si la cobertura baja, falla.
 
 | Módulo | Líneas | Ramas |
@@ -206,7 +210,22 @@ motor, recuperación de red, `409` ignorado, partidas completas contra el mock p
 (cliente); niveles, validación de jugadas y estáticos (API); long polling, timeout, jugada ilegal,
 ausencia y bots de la casa (mock); reductor de la partida y deshacer (app).
 
-## 8. Fuentes
+## 8. Revisión adversarial independiente
+
+Antes de la liga, un agente de IA independiente (modelo Fable, sin ver nuestras conclusiones) buscó
+defectos que pudieran costar partidas, con experimentos propios:
+
+| Experimento | Resultado |
+|---|---|
+| Worker en frío, en caliente y tras reinicio forzado | 923 / 716 ms: muy por debajo del límite de 1900 ms |
+| Exceso sobre el presupuesto (40 posiciones, 300 ms) | máx. 0.4 ms |
+| Calidad al abortar (120 posiciones a 2/5/10 ms vs referencia de 300 ms) | 0 errores graves causados por el corte |
+| Oráculo exacto en 50 finales (≤ 11 casillas) sin limpiar la TT | 0 jugadas erróneas, TT consistente |
+| Bot + worker real vs mock, dos partidas intercaladas | 0 respaldos, 0 rechazos, máx. 1086 ms |
+
+**Defectos confirmados: ninguno.** Tres endurecimientos plausibles se aplicaron (sección 6).
+
+## 9. Fuentes
 
 - Pascal Pons, *Solving Connect 4: how to build a perfect AI*, http://blog.gamesolver.org — bitboard,
   `(pos, mask)`, jugadas que no pierden, orden por amenazas. Adaptado a 8×7 y a dos palabras de 32 bits.
@@ -214,7 +233,7 @@ ausencia y bots de la casa (mock); reductor de la partida y deshacer (app).
 - John Tromp, resultados de Connect-4 en tableros de distintos tamaños — contexto: 8×7 no tiene un
   solver conocido aplicable en 2 s.
 
-## 9. Incidente real durante la medición
+## 10. Incidente real durante la medición
 
 Al correr 120 partidas de self-play, las seis ejecuciones reportaron una "jugada más lenta" de
 ~410 s. No era el motor: `pmset -g log` mostró que **la laptop se durmió** de 07:00:01 a 07:05:30
