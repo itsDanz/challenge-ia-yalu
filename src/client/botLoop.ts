@@ -209,9 +209,12 @@ export class BotLoop {
 
   private async run(): Promise<void> {
     let backoff = this.opts.backoffMinMs;
+    // The first poll does not wait, so the connection status is known right away.
+    let waitSec = 0;
     while (!this.stopped) {
       try {
-        const res = await this.opts.client.next(this.opts.waitSec, this.abort.signal);
+        const res = await this.opts.client.next(waitSec, this.abort.signal);
+        waitSec = this.opts.waitSec;
         this.state.lastPollAt = new Date().toISOString();
         this.state.connected = true;
         this.state.authorized = true;
