@@ -9,6 +9,7 @@
   },
   "scripts": {
     "start": "node src/cli/start.ts",
+    "torneo": "bash scripts/run-bot.sh",
     "mock": "node src/cli/mock.ts",
     "dev:web": "vite --config web/vite.config.ts",
     "build:web": "vite build --config web/vite.config.ts",

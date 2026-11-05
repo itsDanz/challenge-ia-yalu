@@ -45,7 +45,8 @@ repetir de inmediato. Reglas de seguridad, cada una con su prueba:
 | Red caída | Reintentos con *backoff* 250 ms → 2 s; el ciclo nunca termina. El `POST` se reintenta mientras quede tiempo; un `409` posterior es inofensivo. |
 | Turno re-servido (respuesta perdida) | Se reenvía la misma columna sin volver a pensar, midiendo el tiempo desde la primera vez que se vio el turno. |
 | Token inválido | Log muy visible y reintento cada 5 s. |
-| Laptop dormida | `caffeinate -i npm start` (README). |
+| Laptop dormida | `npm run torneo` corre el bot bajo `caffeinate` (macOS). |
+| El proceso del bot se cae | `npm run torneo` (`scripts/run-bot.sh`) lo relanza 1 s después; el árbitro recién nos da por ausentes a los 30 s. Idea tomada del bot `free-fall` de nuestro equipo. |
 | Excepciones no previstas | `uncaughtException`/`unhandledRejection` se registran y el proceso sigue. |
 
 La primera consulta usa `wait=0` para saber al instante si estamos conectados.

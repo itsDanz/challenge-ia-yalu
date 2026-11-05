@@ -47,13 +47,13 @@ Cualquier integrante puede ser interrogado: **todos** deben poder explicar las s
 
 ## Checklist del día (8:00 – 9:45)
 
-1. **Laptop conectada al cargador** y con `caffeinate -i` (¡en la medición previa la laptop se
+1. **Laptop conectada al cargador** y con `caffeinate -i` (lo pone `npm run torneo`) (¡en la medición previa la laptop se
    durmió 5 minutos en batería!). Desactivar el bloqueo automático.
 2. Crear `.env` con `ARBITRO_URL` y `TEAM_TOKEN` (nunca en el repo).
 3. Reemplazar `docs/arbitro-openapi.json` por `GET {ARBITRO_URL}/api/openapi.json` y revisar
    diferencias (`git diff`). Ajustar `arbiterClient.ts` si algo cambió; `npm test`.
 4. `npm run me` → debe mostrar nuestro equipo.
-5. `npm run build:web && caffeinate -i npm start`.
+5. `npm run build:web && npm run torneo` (supervisor + caffeinate).
 6. `npm run practice -- casa-basico 1` y `npm run practice -- casa-basico 2`: ganar ambas.
 7. Revisar tiempos reales: `curl {ARBITRO_URL}/api/games/<game_id>` → campo `ms` de cada jugada
    nuestra. Si el máximo es < 1800 ms se puede subir `BOT_THINK_MS` a 1700; si supera 2200, bajarlo.

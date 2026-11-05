@@ -54,8 +54,9 @@ Sin `ARBITRO_URL`/`TEAM_TOKEN` el servidor arranca sólo la app web y su API.
 ## Correr el bot del torneo + la app
 
 ```bash
-caffeinate -i npm start     # macOS: evita que la laptop se duerma durante la liga
-# (en Linux/Windows: npm start)
+npm run torneo              # recomendado: supervisor que relanza el bot si se cae y, en macOS,
+                            # mantiene la laptop despierta (caffeinate) mientras corre
+npm start                   # el bot solo, sin supervisor (en macOS: caffeinate -i npm start)
 ```
 
 - Se conecta al árbitro y juega cada turno que le toque (long polling).
