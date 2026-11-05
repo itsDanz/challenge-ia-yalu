@@ -159,3 +159,19 @@ describe('parseNext', () => {
     expect(t.match_id).toBeNull();
   });
 });
+
+describe('rename (OpenAPI 1.1.0)', () => {
+  it('sends PATCH /api/me with only the name', async () => {
+    const calls: Call[] = [];
+    const client = new ArbiterClient({
+      baseUrl: 'http://x/',
+      token: 'tok',
+      fetch: fakeFetch(200, { id: 'eq3', name: 'Los Recursivos' }, calls),
+    });
+    const team = await client.rename('Los Recursivos');
+    expect(team.name).toBe('Los Recursivos');
+    expect(calls[0].url).toBe('http://x/api/me');
+    expect(calls[0].init.method).toBe('PATCH');
+    expect(JSON.parse(String(calls[0].init.body))).toEqual({ name: 'Los Recursivos' });
+  });
+});

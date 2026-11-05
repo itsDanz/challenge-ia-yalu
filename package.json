@@ -19,7 +19,8 @@
     "bench": "node src/cli/bench.ts",
     "practice": "node src/cli/practice.ts",
     "me": "node src/cli/me.ts",
-    "submit": "node src/cli/submit.ts"
+    "submit": "node src/cli/submit.ts",
+    "rename": "node src/cli/rename.ts"
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.3",

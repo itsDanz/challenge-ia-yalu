@@ -172,6 +172,11 @@ export class ArbiterClient {
     return (await this.request('GET', '/api/me')) as Me;
   }
 
+  /** PATCH /api/me (OpenAPI 1.1.0): changes the team's visible name. */
+  async rename(name: string): Promise<Me['team']> {
+    return (await this.request('PATCH', '/api/me', { name })) as Me['team'];
+  }
+
   async practice(opponent = 'casa-basico', first: Player = 1): Promise<PracticeCreated> {
     return (await this.request('POST', '/api/practice', { opponent, first })) as PracticeCreated;
   }
