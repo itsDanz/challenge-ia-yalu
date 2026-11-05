@@ -98,6 +98,15 @@ npm run selfplay                    # motor vs motor (A/B de configuraciones)
 node tools/arena.ts 10 1500 1500    # nuestro motor vs un minimax "típico" (rival de referencia)
 ```
 
+### Serie contra otro bot (cualquier lenguaje) usando el árbitro simulado
+
+```bash
+npm run mock                                                            # terminal 1
+ARBITRO_URL=http://127.0.0.1:8790 TEAM_TOKEN=token-equipo3 npm start    # terminal 2: este bot
+ARBITRO_URL=http://127.0.0.1:8790 TEAM_TOKEN=token-rival <su comando>   # terminal 3: el otro bot
+node tools/match.ts 10                                                  # terminal 4: 10 partidas alternando quién abre
+```
+
 ## Estructura
 
 ```
