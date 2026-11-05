@@ -1,7 +1,10 @@
 /** Presentation helpers for bot search statistics. Pure and unit-tested. */
 
-/** Score magnitude used by the engine for a won position (assumed; read defensively). */
-export const WIN_SCORE = 100_000;
+/**
+ * Score magnitude the engine uses for a won position (src/engine/search.ts WIN_SCORE).
+ * Duplicated to keep the search code out of the web bundle; a test keeps both in sync.
+ */
+export const WIN_SCORE = 10_000;
 const MATE_THRESHOLD = WIN_SCORE - 100;
 
 export function formatNodes(n: number): string {

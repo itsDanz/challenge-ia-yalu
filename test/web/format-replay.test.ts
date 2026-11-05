@@ -89,3 +89,11 @@ describe('replay', () => {
     expect(reasonLabel('nuevo_motivo')).toBe('nuevo motivo');
   });
 });
+
+describe('engine contract', () => {
+  it('uses the same win score as the engine', async () => {
+    const web = await import('../../web/src/logic/format.ts');
+    const engine = await import('../../src/engine/index.ts');
+    expect(web.WIN_SCORE).toBe(engine.WIN_SCORE);
+  });
+});
