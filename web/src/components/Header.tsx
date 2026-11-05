@@ -1,4 +1,4 @@
-import type { Health, TournamentStatus } from '../api.ts';
+import { STATIC_MODE, type Health, type TournamentStatus } from '../api.ts';
 
 export type ServerState = 'checking' | 'up' | 'down';
 
@@ -47,7 +47,7 @@ export function Header({ server, health, tournament }: HeaderProps) {
           title={health?.version ? `Versión ${health.version}` : undefined}
         >
           <span className="badge__dot" aria-hidden="true" />
-          {server === 'up' ? 'Servidor en línea' : server === 'down' ? 'Servidor desconectado' : 'Conectando…'}
+          {STATIC_MODE ? 'Motor en tu navegador' : server === 'up' ? 'Servidor en línea' : server === 'down' ? 'Servidor desconectado' : 'Conectando…'}
         </span>
       </div>
     </header>

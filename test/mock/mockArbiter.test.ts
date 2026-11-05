@@ -26,7 +26,7 @@ describe('mock arbiter', () => {
     expect((await api('/api/me', { token: 'nope' })).body).toMatchObject({ ok: false, error: 'unauthorized' });
     expect((await api('/api/health')).body).toMatchObject({ ok: true, phase: 'practice' });
     expect((await api('/api/standings')).status).toBe(200);
-    expect((await api('/api/openapi.json')).body.info.version).toBe('1.0.1');
+    expect((await api('/api/openapi.json')).body.info.version).toBe('1.1.0');
     expect((await api('/api/nope')).status).toBe(404);
   });
 

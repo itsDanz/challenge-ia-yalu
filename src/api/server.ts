@@ -12,17 +12,13 @@ import { createServer as createHttpServer, type IncomingMessage, type Server, ty
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize, resolve, sep } from 'node:path';
 import { gridFromMoves, outcome, type Player } from '../engine/rules.ts';
-import type { EngineLike, SearchOptions } from './enginePool.ts';
+import { LEVELS, isLevel } from '../engine/levels.ts';
+import type { EngineLike } from './enginePool.ts';
 
 export const VERSION = '1.0.0';
 export const BODY_LIMIT = 16 * 1024;
 
-export const LEVELS: Record<string, SearchOptions> = {
-  facil: { timeMs: 150, maxDepth: 2, randomness: 0.35 },
-  medio: { timeMs: 400, maxDepth: 6 },
-  dificil: { timeMs: 1000 },
-  maximo: { timeMs: 1500 },
-};
+export { LEVELS } from '../engine/levels.ts';
 
 export interface ArbiterProxy {
   game(id: string): Promise<unknown>;
@@ -108,7 +104,7 @@ export function createServer(opts: ServerOptions): Server {
       throw new HttpError(400, 'validation', '"moves" debe ser una lista de columnas enteras.');
     }
     const level = body.level ?? 'dificil';
-    const opts2 = typeof level === 'string' ? LEVELS[level] : undefined;
+    const opts2 = isLevel(level) ? LEVELS[level] : undefined;
     if (!opts2) throw new HttpError(400, 'validation', `Nivel inválido: ${String(level)}. Usa facil, medio, dificil o maximo.`);
     let grid;
     try {
