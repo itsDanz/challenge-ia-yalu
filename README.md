@@ -118,4 +118,4 @@ docs/         documentación
   orden de jugadas, jugadas que no pierden. Adaptado a 8×7.
 - Victor Allis, *A Knowledge-based Approach of Connect-Four* (1988): regla de paridad de amenazas.
 - Equipo 3: Mauricio Estuardo Batres Montejo, José Danilo Alvarado Zamora, Luis Fernando Rivas
-  Colaj, Matias Javier Montini.
+  Colaj, Matias Javier Montini, Jessica Romero.
