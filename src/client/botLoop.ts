@@ -356,7 +356,9 @@ export class BotLoop {
         return await this.opts.client.move(turn.game_id, column);
       } catch (err) {
         this.recordError(err);
-        if (err instanceof ArbiterError) {
+        // 5xx/429: the arbiter had a transient problem, so retry like a network error.
+        const transient = err instanceof ArbiterError && (err.status >= 500 || err.status === 429);
+        if (err instanceof ArbiterError && !transient) {
           if (err.status === 409) {
             this.opts.log(`[bot] 409 ${err.code} en ${turn.game_id}: se ignora`);
           } else {

@@ -19,7 +19,9 @@ process.on('unhandledRejection', (err) => log(`[proceso] unhandledRejection: ${(
 const port = Number(process.env.PORT ?? 8787);
 const host = process.env.HOST ?? '0.0.0.0';
 const rawThink = Number(process.env.BOT_THINK_MS ?? 1500);
-const thinkMs = Math.max(100, Math.min(2000, Number.isFinite(rawThink) ? rawThink : 1500));
+// Capped at 1700: above that the worker hang-kill (budget + 400 ms) would fire after the
+// bot's 2200 ms fallback and the next turn would start on a cold worker.
+const thinkMs = Math.max(100, Math.min(1700, Number.isFinite(rawThink) ? rawThink : 1500));
 const arbiterUrl = process.env.ARBITRO_URL;
 const token = process.env.TEAM_TOKEN;
 

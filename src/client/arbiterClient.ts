@@ -162,8 +162,12 @@ export class ArbiterClient {
     return parseNext(body);
   }
 
-  async move(gameId: string, column: number): Promise<MoveAccepted> {
-    const body = await this.request('POST', '/api/move', { game_id: gameId, column });
+  /**
+   * Short timeout (default 1000 ms): a stalled POST must leave time for a retry inside the
+   * 3000 ms deadline. Resending is harmless (a duplicate gets 409 not_your_turn).
+   */
+  async move(gameId: string, column: number, timeoutMs = 1000): Promise<MoveAccepted> {
+    const body = await this.request('POST', '/api/move', { game_id: gameId, column }, timeoutMs);
     if (!isObject(body)) throw new NetworkError('Respuesta de /api/move no es un objeto');
     return body as unknown as MoveAccepted;
   }

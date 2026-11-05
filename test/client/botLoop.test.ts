@@ -197,6 +197,21 @@ describe('BotLoop safety', () => {
     expect(loop.status().results.won).toBe(1);
   });
 
+  it('retries the POST when the arbiter answers 5xx (transient), not only on network errors', async () => {
+    let calls = 0;
+    const { client, moves } = scriptedClient([makeTurn()], async () => {
+      calls++;
+      if (calls === 1) throw new ArbiterError(502, 'internal', 'bad gateway');
+      return { ok: true, state: 'playing' };
+    });
+    loop = new BotLoop({ client, decide: centerDecider, log: quiet });
+    loop.start();
+    await waitFor(() => loop!.status().moves === 1);
+    expect(moves).toHaveLength(2);
+    expect(moves[0].column).toBe(moves[1].column);
+    expect(loop.status().rejected).toBe(0);
+  });
+
   it('a re-served turn reuses the column already chosen without calling the decider', async () => {
     let decided = 0;
     const { client, moves } = scriptedClient([makeTurn(), makeTurn()], async () => {
